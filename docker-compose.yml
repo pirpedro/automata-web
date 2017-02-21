@@ -1,0 +1,30 @@
+version: '2'
+services:
+  db:
+    image: postgres:9.4
+    volumes:
+      - ./pgdata:/pgdata
+    environment:
+      PGDATA: /pgdata
+  redis:
+    image: redis
+  web:
+    build: ./web
+    #command: bundle exec rails server -p 3000 -b '0.0.0.0'
+    volumes:
+      - ./web:/app
+      - ./bundle:/bundle
+    #  - app-web-sync:/app:rw
+    #  - app-bundle-sync:/bundle:rw
+    ports:
+      - "3000:3000"
+    environment:
+      REDIS_URL: redis://redis:6379
+    links:
+      - db
+      - redis
+#volumes:
+#  app-web-sync:
+#    external: true
+#  app-bundle-sync:
+#    external: true
